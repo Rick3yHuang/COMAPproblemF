@@ -17,7 +17,9 @@ library(rlang)
 ```{r,echo=FALSE}
 library(ggplot2)
 #install.packages("ggfortify")
+#install.packages("factoextra")
 library(ggfortify)
+library(factoextra)
 ```
 
 ## Read and summarize the data
@@ -91,12 +93,11 @@ In this case, we might name our component $y_{1}$ as  Demographical factor and n
 ## Another method to do PCA
 
 ```{r}
-TimesRanking.pca <- prcomp(TimesRanking[,6:13])
+TimesRanking.pca <- prcomp(TimesRanking[,6:13], scale = TRUE)
 TimesRanking.pca
 summary(TimesRanking.pca)
 ```
 
-Almost the same result from the previous method.
 
 ## Plot the principal components
 
@@ -110,4 +111,16 @@ TR.PCA.plot2
 *TODO: Here we still need to find some possible categorical or numerical response variable (output) to measure the level of health (may be some indirectly related variables), in order to chack whether our PC1 & 2 like above.*
 
 In the plots above, I used the scoreAvg (Times ranking score) to show the cluster in the first plot, which shows that a higher score means a combination of a high PC1 and a high PC2. For the seconf plot, I manually labelled countries with score from 40 to the max as healthy, countries with score from 20 to 40 as neet to improve, and countries from min to 20 as unhealthy. The plot shows that the countries with "unhealthy" education system have a low PC1 and a median PC2, and the countries "need improvement" in education have a median PC1 and a low or median PC2, while the countries with a "healthy" education sytem have a high PC1 and a median or high PC2. This way of evaluating Health variable may not be practical, some more reasonable response variable need to be chosen.
+
+
+## Visualizations
+
+```{r}
+TR.Individuals <- fviz_pca_ind(TimesRanking.pca,
+                               col.ind = "cos2", #color by the quality of representation
+                               gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"), #set up the colors
+                               reprel = TRUE #avoid test overlapping
+                               )
+TR.Individuals
+```
 
