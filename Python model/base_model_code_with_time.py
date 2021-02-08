@@ -15,7 +15,7 @@ def show_status(year):
     outfile.write("---\n")
 
 
-runName = "US 2016"
+runName = "Argentina 2020"
 # With Time Dependence
 totalTime = 10
 timestep = .1
@@ -51,30 +51,31 @@ timeDependence[2] += .01
 timeDependence[4] += .01
 timeDependence[9] += .03
 
+policies = [False, False, False, False, False]
 #The following are potential education policies, simply toggle True/False to turn them On/Off
 #increase in research funding
-if False:
+if policies[0]:
     timeDependence[6] += .02
     timeDependence[7] += .02
 
 #make it easier for intl students to attend schools
-if False:
+if policies[1]:
     timeDependence[5] += .02
     timeDependence[2] += .01
 
 #increase domestic scholarship funding
-if False:
+if policies[2]:
     timeDependence[0] -= .02
     timeDependence[1] -= .02
     timeDependence[2] += .02
 
 #increase teacher pay
-if False:
+if policies[3]:
     timeDependence[1] += .02
     timeDependence[0] += .01
 
 #opening more schools
-if False:
+if policies[4]:
     timeDependence[2] -= .02
 
 for i in range(1, numsteps): # These are where we would implement the time dependence of the parameters
@@ -97,13 +98,26 @@ for i in range(0,numsteps):
 sustainability = np.zeros(numsteps)
 for i in range(1,numsteps):
     sustainability[i] = (ESH[i] - ESH[0])/ESH[0]
+print(sustainability[10])
 
 outfile = open("outputs.txt","a+")
 outfile.write("\n" + runName + "\n")
+if policies[0]:
+    outfile.write("research funding\n")
+if policies[1]:
+    outfile.write("intl students\n")
+if policies[2]:
+    outfile.write("domestic scholarships\n")
+if policies[3]:
+    outfile.write("teacher pay")
+if policies[4]:
+    outfile.write("more schools")
 outfile.write("~~~~~~~~~~~~~~~~~~~~\n")
 show_status(0)
 show_status(5)
 show_status(10)
+outfile.flush()
+outfile.close()
 
 # sus3 = False
 # sus10 = False
@@ -130,5 +144,6 @@ time = np.linspace(0, totalTime, num=numsteps)
 plt.plot(time, ESH)
 plt.ylabel("Education System Health Index")
 plt.xlabel("Time (years)")
-plt.title("Country ESH Over Time")
-plt.show()
+plt.title(runName + " ESH Over Time")
+#plt.show()
+plt.savefig('./No Policies/' + runName + ".png")
