@@ -1,0 +1,12 @@
+﻿Variable,Scales (multiply these before put x's into model)
+tuition,0.0000691740765574
+student_teacher_ratio,0.0478429984163968
+school_size,0.0000185712114766
+income,0.0222082063764202
+population,0.0000044083437883
+intl_student_percent,6.1804697156983900
+research,0.0421206926326697
+citation,0.0196516933864191
+male_female_ratio,1.0640561821664200
+GDP,0.0000000000003384
+num_NP,0.0000021274241999
