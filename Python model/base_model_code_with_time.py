@@ -4,16 +4,18 @@ import random
 
 
 def show_status(year):
-    print("\nParameters at year " + str(year))
-    print(parameters[int((year/timestep))])
-    print("Metrics at year " + str(year))
-    print(metric[int((year/timestep))])
-    print("ESH at year " + str(year))
-    print(ESH[int((year/timestep))])
-    print(str(year) + " year sustainability: ")
-    print(sustainability[int((year/timestep))])
+    outfile.write("Parameters at year " + str(year) + "\n")
+    outfile.write(str(parameters[int((year/timestep))]) + "\n")
+    outfile.write("Metrics at year " + str(year) + "\n")
+    outfile.write(str(metric[int((year/timestep))]) + "\n")
+    outfile.write("ESH at year " + str(year) + "\n")
+    outfile.write(str(ESH[int((year/timestep))]) + "\n")
+    outfile.write(str(year) + " year sustainability: " + "\n")
+    outfile.write(str(sustainability[int((year/timestep))]) + "\n")
+    outfile.write("---\n")
 
 
+runName = "US 2016"
 # With Time Dependence
 totalTime = 10
 timestep = .1
@@ -33,9 +35,12 @@ weights.flush()
 weights.close()
 params = open("parameters.csv", "r") # reading in the initial parameters from a csv file
 line = params.readline()
+scales = open("Variable Scaling.csv", "r")
+scales.readline()
 for i in range(0,numParam):
-    parameters[0,i] = float(line.split(",")[i])
+    parameters[0,i] = float(line.split(",")[i])*float(scales.readline().split(",")[1])
 params.close()
+scales.close()
 metricWeights = np.array([.266, .1951, .1373, .0858, .0509, .0481])
 ESH = np.empty(numsteps)
 
@@ -93,6 +98,9 @@ sustainability = np.zeros(numsteps)
 for i in range(1,numsteps):
     sustainability[i] = (ESH[i] - ESH[0])/ESH[0]
 
+outfile = open("outputs.txt","a+")
+outfile.write("\n" + runName + "\n")
+outfile.write("~~~~~~~~~~~~~~~~~~~~\n")
 show_status(0)
 show_status(5)
 show_status(10)
