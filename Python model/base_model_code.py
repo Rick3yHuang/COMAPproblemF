@@ -1,7 +1,7 @@
 import numpy as np
 
-numParam = 5
-numMetric = 3
+numParam = 11
+numMetric = 6
 
 #Without Time dependence
 parameters = np.empty(numParam, dtype=float)
@@ -20,4 +20,8 @@ print(model)
 params.close()
 metric = np.matmul(model, parameters) #multiplying the weights matrix by the parameter vector to produce the metrics
 print(metric)
+
+metricWeights = np.array([.266, .1951, .1373, .0858, .0509, .0481])
+ESH = np.dot(metricWeights, metric)
+print(ESH)
 
