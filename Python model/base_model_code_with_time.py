@@ -120,4 +120,7 @@ show_status(10)
 
 time = np.linspace(0, totalTime, num=numsteps)
 plt.plot(time, ESH)
+plt.ylabel("Education System Health Index")
+plt.xlabel("Time (years)")
+plt.title("Country ESH Over Time")
 plt.show()
