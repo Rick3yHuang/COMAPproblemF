@@ -25,87 +25,26 @@ library(factoextra)
 ## Read and summarize the data
 
 ```{r}
-TimesRanking <- read.csv("TimesCountryAvg.csv")
-#dim(TimesRanking)
-head(TimesRanking)
+EDU <- read.csv("Country - EDU data.csv")
+EDU <- EDU[1:88, 1:13]
+#dim(EDU)
+head(EDU)
 ```
-
-## Create a unified scale for all possible variables
-
-### Create a covariance matrix S for our data
-
-  After calculating all the covariances, we could find the *total variance* by sum all variance we have (we calculate the $\sum_{j=1}^{k}S_{jj}$, and this is actually the sum of eigenvalues of S)
-  
-```{r}
-S <- cov(TimesRanking[, 6:13])
-S
-sum(diag(S))
-```
-
-### find eigenvalues and eigenvectors of S
-
-```{r}
-s.eigen <- eigen(S)
-s.eigen
-```
-
-The eigenvectors represent the principal components of S. The eigenvalues of S are used to find the proportion of the total variance explained by the components.
-
-```{r}
-for (s in s.eigen$values) {
-  print(s / sum(s.eigen$values))
-}
-```
-
-The first two principal components account for 88.3% of the total variance. 
-
-(*TODO: Here we need to know what level of total variance we want our model to explain*)
-
-A scree graph of the eigenvalues can be plotted to visualize the proportion of variance explained by each subsequential eigenvalue.
-
-```{r}
-plot(s.eigen$values, xlab = 'Eigenvalue Number', ylab = 'Eigenvalue Size', main = 'Scree Graph')
-lines(s.eigen$values)
-```
-
-```{r}
-s.eigen$vectors
-```
-
-### use the eigenvectors to find out the results
-
-The elements of the eigenvectors of S are the 'coefficients' or 'loadings' of the principal components.
-
-here if we decide we are going to use the first two components as the principal components we can write out the formula for these two principal compnents from the eigenvectors result above:
-
-$1^{st}$ principal component 
-
-$y_{1} = 0.03118182 * StudentToStaffAvg + 0.0361542981 *  intlStudentAvg +0.9784538847 * femalePersentageAvg + 0.144736992 * malepercentageAvg - 0.139241131*teachingAvg- 0.0016289660*reseachAvg + 0.0024238021*citation + 0.001771678*industryIncomeAvg$
-
-$y_{1} = 0.002569285 * StudentToStaffAvg -0.0014031869 *  intlStudentAvg -0.0010704334* femalePersentageAvg + 0.0036249392 * malepercentageAvg + 0.003512949*teachingAvg- 0.9623460710*reseachAvg - 0.2691096581*citation + 0.03787921e*industryIncomeAvg$
-
-### Analyze the principal components
-
-From the result above the $y_{1}$ combines variables StudentToStaffAvg, intlStudent, femalePercentageAvg, and teaching, while the component $y_{2}$ measures the change in the variables like reserchAvg, citation, and industryIncomAvg.
-
-In this case, we might name our component $y_{1}$ as  Demographical factor and name the second component $y_{2}$ as Educational Outcome factor.
 
 ## Another method to do PCA
 
 ```{r}
-TimesRanking.pca <- prcomp(TimesRanking[,6:13], scale = TRUE)
-TimesRanking.pca
-summary(TimesRanking.pca)
+EDU.pca <- prcomp(EDU[,2:12], scale = TRUE)
+EDU.pca
+summary(EDU.pca)
 ```
 
 
 ## Plot the principal components
 
 ```{r}
-TR.PCA.plot <- autoplot(TimesRanking.pca, data = TimesRanking, colour = 'scoreAvg')
-TR.PCA.plot
-TR.PCA.plot2 <- autoplot(TimesRanking.pca, data = TimesRanking, colour = 'Health')
-TR.PCA.plot2
+EDU.PCA.plot <- autoplot(EDU.pca, data = EDU, colour = 'TimesScore')
+EDU.PCA.plot
 ```
 
 *TODO: Here we still need to find some possible categorical or numerical response variable (output) to measure the level of health (may be some indirectly related variables), in order to chack whether our PC1 & 2 like above.*
@@ -116,11 +55,34 @@ In the plots above, I used the scoreAvg (Times ranking score) to show the cluste
 ## Visualizations
 
 ```{r}
-TR.Individuals <- fviz_pca_ind(TimesRanking.pca,
+EDU.eig <- fviz_eig(EDU.pca)
+EDU.eig
+```
+
+
+```{r}
+TR.Individuals <- fviz_pca_ind(EDU.pca,
                                col.ind = "cos2", #color by the quality of representation
                                gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"), #set up the colors
                                reprel = TRUE #avoid test overlapping
                                )
 TR.Individuals
+```
+
+```{r}
+TR.Var <- fviz_pca_var(EDU.pca,
+             col.var = "contrib", # Color by contributions to the PC
+             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+             repel = TRUE     # Avoid text overlapping
+             )
+TR.Var
+```
+
+```{r}
+TR.biplot <- fviz_pca_biplot(EDU.pca, repel = TRUE,
+                col.var = "#2E9FDF", # Variables color
+                col.ind = "#696969"  # Individuals color
+                )
+TR.biplot
 ```
 
